@@ -5,16 +5,10 @@ import time
 rp_mode=True
 
 pestDetected = 0
-diseaseDetected = 0
 
-def nothing(x):
-    pass
 
 cap = cv2.VideoCapture(0)
 
-#cv2.namedWindow('framePest')
-#cv2.createTrackbar("Scale","framePest",11,20,nothing)
-#cv2.createTrackbar("Neighbours","framePest",0,20,nothing)
 
 while True:
     ret, frameDisease = cap.read()
@@ -29,18 +23,18 @@ while True:
     frameDisease = cv2.GaussianBlur(frameDisease, (5,5), 0)
     hsv = cv2.cvtColor(frameDisease,cv2.COLOR_BGR2HSV)
 
-    lower_sehat = np.array([39,225,20])
+    lower_sehat = np.array([30,60,20])
     upper_sehat = np.array([60,255,255])
     mask_sehat = cv2.inRange(hsv,lower_sehat,upper_sehat)
     result_sehat = cv2.bitwise_and(frameDisease,frameDisease,mask=mask_sehat)
 
-    lower_kursehat = np.array([32,225,20])
-    upper_kursehat = np.array([39,255,255])
+    lower_kursehat = np.array([29,60,20])
+    upper_kursehat = np.array([25,255,255])
     mask_kursehat = cv2.inRange(hsv,lower_kursehat,upper_kursehat)
     result_kursehat = cv2.bitwise_and(frameDisease,frameDisease,mask=mask_kursehat)
 
-    lower_tidsehat = np.array([25,225,20])
-    upper_tidsehat = np.array([31,255,255])
+    lower_tidsehat = np.array([24,60,20])
+    upper_tidsehat = np.array([20,255,255])
     mask_tidsehat = cv2.inRange(hsv,lower_tidsehat,upper_tidsehat)
     result_tidsehat = cv2.bitwise_and(frameDisease,frameDisease,mask=mask_tidsehat)
 
@@ -97,17 +91,14 @@ while True:
     height = int(cap.get(4))
 
     gray = cv2.cvtColor(framePest, cv2.COLOR_BGR2GRAY)
-    pest_classifer = cv2.CascadeClassifier("dataset\classifier\cascade.xml")
 
     font = cv2.FONT_HERSHEY_SIMPLEX
     framePest = cv2.putText(framePest, 'Pest Detection', 
                         (10, height-10),font,1,(17,135,0),
                         3, cv2.LINE_AA)
     
-    #scale = cv2.getTrackbarPos("Scale","framePest")
-    #neighbours = cv2.getTrackbarPos("Neighbours","framePest")
-
-    pests = pest_classifer.detectMultiScale(gray,1.4,14)
+    pest_classifer = cv2.CascadeClassifier("dataset_terbaru\classifier\cascade.xml")
+    pests = pest_classifer.detectMultiScale(gray,1.1,5)
 
     for rect in pests:
         (x,y,w,h) = rect
